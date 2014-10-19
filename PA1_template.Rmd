@@ -8,6 +8,9 @@ output:
 
 
 ## Loading and preprocessing the data
+
+Before loading the file, first we are doing a check whether it exsits - if not, the file will be downloaded from the cloudfront repository. If the file exists - it is loaded into the `f` variable which is then copied into variable `d`. We are keeping `f` to always have the access to *clean*, unmanipulated data set.
+
 ```{r, echo = TRUE}
 url <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
 file <- "activity.zip"
@@ -24,10 +27,15 @@ d$date <- as.character(d$date)
 d$date <- as.Date(d$date, "%Y-%m-%d")
 ```
 
+
+
 ## What is mean total number of steps taken per day?
 ```{r, echo = TRUE}
 dailytotal <- aggregate(d$steps, by = d[c("date")], sum)
-hist(dailytotal$x, breaks = 20, xlab="Steps", main="Total steps taken daily")
+hist(dailytotal$x, 
+     breaks = 20, 
+     xlab="Steps", 
+     main="Total number of steps taken daily")
 mean(dailytotal$x, na.rm = T)
 median(dailytotal$x, na.rm = T)
 ```
@@ -37,10 +45,11 @@ median(dailytotal$x, na.rm = T)
 ```{r, echo = TRUE}
 dailymean <- aggregate(d$steps, by = d[c("interval")], mean, na.rm=T)
 names(dailymean) <- c("interval", "steps")
-plot(dailymean, type="l")
+plot(dailymean, type="l",
+     xlab = "Interval",
+     main = "Average number of steps taken versus the 5-minute intervals")
 dailymean[dailymean$steps == max(dailymean$steps),]
 ```
-"Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?"
 
 
 ## Imputing missing values
@@ -51,7 +60,10 @@ d1 <- merge(d, dailymean, by = "interval")
 d1$steps.x[is.na(d1$steps.x)] <- d1$steps.y[is.na(d1$steps.x)]
 
 dailytotal1 <- aggregate(d1$steps.x, by = d1[c("date")], sum)
-hist(dailytotal1$x, breaks = 20, xlab="Steps", main="Total steps taken daily")
+hist(dailytotal1$x, 
+     breaks = 20, 
+     xlab="Steps", 
+     main="Total number of steps taken daily")
 mean(dailytotal1$x)
 median(dailytotal1$x)
 ```
