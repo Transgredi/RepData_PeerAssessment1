@@ -22,8 +22,6 @@ d$date <- as.character(d$date)
 d$date <- as.Date(d$date, "%Y-%m-%d")
 ```
 
-
-
 ## What is mean total number of steps taken per day?
 Below we have a figure presenting histogram of total number of steps taken each day. The option `break` for the histogram is set to `20` to have a more detailed breakdown of the frequencies.
 
@@ -59,7 +57,6 @@ median(dailytotal$x, na.rm = T)
 ```
 ## [1] 10765
 ```
-
 
 ## What is the average daily activity pattern?
 
