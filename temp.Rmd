@@ -1,0 +1,41 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+url <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+file <- "activity.zip"
+csv <- "activity.csv"
+
+if (!file.exists(csv)) {
+  download.file(url, file, method = "curl")
+  unzip(file)
+}
+
+f <- read.csv(csv)
+d <- f
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+d$date <- as.character(d$date)
+d$date <- as.Date(d$date, "%Y-%m-%d")
+
+dailytotal <- aggregate(d$steps, by = d[c("date")], sum)
+hist(dailytotal$x, breaks = 20, xlab="Steps", main="Total steps taken daily")
+mean(dailytotal$x, na.rm = T)
+median(dailytotal$x, na.rm = T)
+
+dailymean <- aggregate(d$steps, by = d[c("interval")], mean, na.rm=T)
+names(dailymean) <- c("interval", "steps")
+plot(dailymean, type="l")
+dailymean[dailymean$steps == max(dailymean$steps),]
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

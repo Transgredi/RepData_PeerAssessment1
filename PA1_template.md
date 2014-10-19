@@ -1,14 +1,9 @@
----
-title: 'Reproducible Research: Peer Assessment 1'
-output:
-  pdf_document: default
-  html_document:
-    keep_md: yes
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
-```{r, echo = TRUE}
+
+```r
 url <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
 file <- "activity.zip"
 csv <- "activity.csv"
@@ -25,40 +20,92 @@ d$date <- as.Date(d$date, "%Y-%m-%d")
 ```
 
 ## What is mean total number of steps taken per day?
-```{r, echo = TRUE}
+
+```r
 dailytotal <- aggregate(d$steps, by = d[c("date")], sum)
 hist(dailytotal$x, breaks = 20, xlab="Steps", main="Total steps taken daily")
+```
+
+![plot of chunk unnamed-chunk-2](./PA1_template_files/figure-html/unnamed-chunk-2.png) 
+
+```r
 mean(dailytotal$x, na.rm = T)
+```
+
+```
+## [1] 10766
+```
+
+```r
 median(dailytotal$x, na.rm = T)
+```
+
+```
+## [1] 10765
 ```
 
 
 ## What is the average daily activity pattern?
-```{r, echo = TRUE}
+
+```r
 dailymean <- aggregate(d$steps, by = d[c("interval")], mean, na.rm=T)
 names(dailymean) <- c("interval", "steps")
 plot(dailymean, type="l")
+```
+
+![plot of chunk unnamed-chunk-3](./PA1_template_files/figure-html/unnamed-chunk-3.png) 
+
+```r
 dailymean[dailymean$steps == max(dailymean$steps),]
+```
+
+```
+##     interval steps
+## 104      835 206.2
 ```
 "Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?"
 
 
 ## Imputing missing values
-```{r, echo=TRUE}
-sum(is.na(d$steps))
 
+```r
+sum(is.na(d$steps))
+```
+
+```
+## [1] 2304
+```
+
+```r
 d1 <- merge(d, dailymean, by = "interval")
 d1$steps.x[is.na(d1$steps.x)] <- d1$steps.y[is.na(d1$steps.x)]
 
 dailytotal1 <- aggregate(d1$steps.x, by = d1[c("date")], sum)
 hist(dailytotal1$x, breaks = 20, xlab="Steps", main="Total steps taken daily")
+```
+
+![plot of chunk unnamed-chunk-4](./PA1_template_files/figure-html/unnamed-chunk-4.png) 
+
+```r
 mean(dailytotal1$x)
+```
+
+```
+## [1] 10766
+```
+
+```r
 median(dailytotal1$x)
+```
+
+```
+## [1] 10766
 ```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r, echo=TRUE}
+
+```r
 d1$weekday <- weekdays(d1$date)
 
 weekend <- d1[d1$weekday %in% c("Saturday", "Sunday"),]
@@ -81,3 +128,5 @@ xyplot(x ~ interval | factor(day),
        ylab = "Number of steps",
        layout = c(1,2))
 ```
+
+![plot of chunk unnamed-chunk-5](./PA1_template_files/figure-html/unnamed-chunk-5.png) 
